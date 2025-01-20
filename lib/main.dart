@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gsb/navbar.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const SearchBarApp());
 }
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
