@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gsb/api.dart';
-import 'package:gsb/home_page.dart';
 import 'package:gsb/main.dart';
 import 'package:gsb/navigation.dart';
 
@@ -118,7 +117,7 @@ class _RegisterFormState extends State<RegisterForm> {
               print("button working");
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
+                MaterialPageRoute(builder: (context) => const Welcome()),
               );
             },
             child: Text(
