@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gsb/api.dart';
-import 'package:gsb/home_page.dart';
+import 'package:gsb/navigation.dart';
 import 'package:gsb/register_page.dart';
 
+// COULEUR GSB
 var primaryColor = const Color(0xFF5182BD);
 
 void main() {
@@ -38,6 +39,7 @@ class _WelcomeState extends State<Welcome> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  // FONCTION DE LOGIN
   Future<void> _handleLogin() async {
     try {
       if (_loginFormKey.currentState!.validate()) {
@@ -49,21 +51,23 @@ class _WelcomeState extends State<Welcome> {
         if (response != null) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
+            MaterialPageRoute(
+              builder: (context) => MainNavigation(
+                )
+              ),
           );
         }
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          duration: const Duration(seconds: 3),
-          content: Text(
-            "L'utilisateur n'existe pas",
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 20),
+            duration: const Duration(seconds: 3),
+            content: Text(
+              "L'utilisateur n'existe pas",
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 20),
             ),
-          backgroundColor: const Color.fromARGB(255, 241, 16, 38)
-          ),
+            backgroundColor: const Color.fromARGB(255, 241, 16, 38)),
       );
     }
   }
@@ -109,6 +113,7 @@ class _WelcomeState extends State<Welcome> {
     );
   }
 
+  // FORM DE LOGIN
   Widget _buildLoginForm() {
     return Form(
       key: _loginFormKey,
@@ -162,6 +167,7 @@ class _WelcomeState extends State<Welcome> {
     );
   }
 
+  // BOUTON DE LOGIN
   Widget _buildLoginButton() {
     return TextButton(
       onPressed: () async {

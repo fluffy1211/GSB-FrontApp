@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 // COULEUR GSB
 var primaryColor = const Color(0xFF5182BD);
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class ConsultationPage extends StatefulWidget {
+  const ConsultationPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<ConsultationPage> createState() => _ConsultationPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _ConsultationPageState extends State<ConsultationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Accueil",
+          "Vos consultations",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         automaticallyImplyLeading: false,

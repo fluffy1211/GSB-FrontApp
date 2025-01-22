@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gsb/api.dart';
 import 'package:gsb/home_page.dart';
 import 'package:gsb/main.dart';
+import 'package:gsb/navigation.dart';
 
+// COULEUR GSB
 var primaryColor = const Color(0xFF5182BD);
 
 class RegisterForm extends StatefulWidget {
@@ -18,10 +20,45 @@ class _RegisterFormState extends State<RegisterForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  // REGEX DU MAIL
+  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
+  // FONCTION DE REGISTER
   Future<void> _handleRegister() async {
     try {
       if (_registerFormKey.currentState!.validate()) {
+
+        // CHECK SI LE MAIL EST VALIDE
+        if (!emailRegex.hasMatch(_emailController.text)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              duration: Duration(seconds: 4),
+              content: Text(
+                'Veuillez entrer une adresse email valide',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+
+        // CHECK SI LES MDP MATCH
+        if (_passwordController.text != _confirmPasswordController.text) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            duration: Duration(seconds: 4),
+            content: Text(
+              'Les mots de passe doivent correspondre',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+            backgroundColor: Colors.red,
+          ));
+          return;
+        }
+
+        // SI TOUT EST VALIDE, ON CREE L'USER
         final response = await createUser({
           'name': _nameController.text,
           'email': _emailController.text,
@@ -29,20 +66,22 @@ class _RegisterFormState extends State<RegisterForm> {
           'confirmPassword': _confirmPasswordController.text,
         });
 
+        // REDIRECT SUR LA Home Page
         if (response != null) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
+            MaterialPageRoute(builder: (context) => MainNavigation()),
           );
         }
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          duration: const Duration(seconds: 3),
+          duration: const Duration(seconds: 4),
           content: Text(
-            'Erreur: $e',
-            style: TextStyle(color: Colors.white),
+            'Cet e-mail / utilisateur est déjà associé à un compte',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
           backgroundColor: Colors.red,
         ),
@@ -66,7 +105,7 @@ class _RegisterFormState extends State<RegisterForm> {
             ),
           ),
           const Text(
-            "Page d'inscription",
+            "Veuillez créer un compte",
             style: TextStyle(fontSize: 19),
           ),
           const SizedBox(height: 50),
@@ -79,7 +118,7 @@ class _RegisterFormState extends State<RegisterForm> {
               print("button working");
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const Welcome()),
+                MaterialPageRoute(builder: (context) => const HomePage()),
               );
             },
             child: Text(
@@ -94,6 +133,7 @@ class _RegisterFormState extends State<RegisterForm> {
     )));
   }
 
+  // FORM DE REGISTER
   Widget _buildRegisterForm() {
     return Form(
       key: _registerFormKey,
@@ -189,6 +229,7 @@ class _RegisterFormState extends State<RegisterForm> {
     );
   }
 
+  // BOUTON DE REGISTER
   Widget _buildRegisterButton() {
     return TextButton(
       onPressed: () {
@@ -202,7 +243,7 @@ class _RegisterFormState extends State<RegisterForm> {
         backgroundColor: primaryColor,
       ),
       child: const Text(
-        'Se connecter',
+        "S'enregistrer",
         style: TextStyle(color: Colors.white),
       ),
     );
