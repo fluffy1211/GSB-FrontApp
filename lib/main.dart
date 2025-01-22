@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gsb/api.dart';
+import 'package:gsb/home_page.dart';
+import 'package:gsb/register_page.dart';
 
 var primaryColor = const Color(0xFF5182BD);
 
@@ -31,7 +34,39 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
-  final _formKey = GlobalKey<FormState>();
+  final _loginFormKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  Future<void> _handleLogin() async {
+    try {
+      if (_loginFormKey.currentState!.validate()) {
+        final response = await loginUser({
+          'email': _usernameController.text,
+          'password': _passwordController.text,
+        });
+
+        if (response != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 3),
+          content: Text(
+            "L'utilisateur n'existe pas",
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 20),
+            ),
+          backgroundColor: const Color.fromARGB(255, 241, 16, 38)
+          ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +76,7 @@ class _WelcomeState extends State<Welcome> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Padding(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(30),
               child: Image(
                 image: AssetImage('assets/gsb.png'),
                 width: 200,
@@ -56,9 +91,17 @@ class _WelcomeState extends State<Welcome> {
             const SizedBox(height: 70),
             _buildLoginButton(),
             const SizedBox(height: 20),
-            const Text(
-              "Vous n'avez pas encore de compte ?",
-              style: TextStyle(fontSize: 14),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RegisterForm()),
+                );
+              },
+              child: const Text(
+                "Vous n'avez pas encore de compte ?",
+                style: TextStyle(fontSize: 16),
+              ),
             ),
           ],
         ),
@@ -68,12 +111,13 @@ class _WelcomeState extends State<Welcome> {
 
   Widget _buildLoginForm() {
     return Form(
-      key: _formKey,
+      key: _loginFormKey,
       child: Column(
         children: <Widget>[
           SizedBox(
             width: 300,
             child: TextFormField(
+              controller: _usernameController,
               decoration: InputDecoration(
                 hintText: 'Nom',
                 enabledBorder: UnderlineInputBorder(
@@ -95,6 +139,7 @@ class _WelcomeState extends State<Welcome> {
           SizedBox(
             width: 300,
             child: TextFormField(
+              controller: _passwordController,
               obscureText: true,
               decoration: InputDecoration(
                   hintText: 'Mot de passe',
@@ -119,9 +164,11 @@ class _WelcomeState extends State<Welcome> {
 
   Widget _buildLoginButton() {
     return TextButton(
-      onPressed: () {
-        if (_formKey.currentState!.validate()) {
-          // Si le form est valide
+      onPressed: () async {
+        if (_loginFormKey.currentState!.validate()) {
+          await _handleLogin();
+        } else {
+          return;
         }
       },
       style: TextButton.styleFrom(
@@ -132,5 +179,12 @@ class _WelcomeState extends State<Welcome> {
         style: TextStyle(color: Colors.white),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }
