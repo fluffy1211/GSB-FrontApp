@@ -27,10 +27,7 @@ class _WelcomeState extends State<Welcome> {
         if (response != null) {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => MainNavigation(
-                )
-              ),
+            MaterialPageRoute(builder: (context) => MainNavigation()),
           );
         }
       }
@@ -89,6 +86,13 @@ class _WelcomeState extends State<Welcome> {
     );
   }
 
+  bool _showPassword = true;
+  void _togglevisibility() {
+    setState(() {
+      _showPassword = !_showPassword;
+    });
+  }
+
   // FORM DE LOGIN
   Widget _buildLoginForm() {
     return Form(
@@ -121,9 +125,17 @@ class _WelcomeState extends State<Welcome> {
             width: 300,
             child: TextFormField(
               controller: _passwordController,
-              obscureText: true,
+              obscureText: _showPassword,
               decoration: InputDecoration(
                   hintText: 'Mot de passe',
+                  suffixIcon: GestureDetector(
+                    onTap: () {
+                      _togglevisibility();
+                    },
+                    child: Icon(
+                      _showPassword ? Icons.visibility_off : Icons.visibility,
+                    ),
+                  ),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: primaryColor, width: 2),
                   ),

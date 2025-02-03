@@ -1,4 +1,3 @@
-// main.dart or a separate navigation.dart file
 import 'package:flutter/material.dart';
 import '../pages/home_page.dart';
 import '../pages/profile_page.dart';
