@@ -1,8 +1,8 @@
 // main.dart or a separate navigation.dart file
 import 'package:flutter/material.dart';
-import 'home_page.dart';
-import 'profile_page.dart';
-import 'consultation_page.dart';
+import '../pages/home_page.dart';
+import '../pages/profile_page.dart';
+import '../pages/consultation_page.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});

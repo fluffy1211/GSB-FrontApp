@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gsb/api.dart';
-import 'package:gsb/main.dart';
-import 'package:gsb/navigation.dart';
+import 'package:gsb/components/api.dart';
+import 'package:gsb/pages/login_page.dart';
+import 'package:gsb/components/navigation.dart';
 
 // COULEUR GSB
 var primaryColor = const Color(0xFF5182BD);
