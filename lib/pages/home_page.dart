@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gsb/components/praticiens.dart';
 
 // COULEUR GSB
 var primaryColor = const Color(0xFF5182BD);
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
         automaticallyImplyLeading: false,
         backgroundColor: primaryColor,
       ),
+      body: PraticiensList()
     );
   }
 }
