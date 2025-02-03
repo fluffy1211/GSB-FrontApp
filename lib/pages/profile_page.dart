@@ -22,6 +22,37 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Future<void> _showLogoutConfirmation() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmation'),
+          content: const Text('Voulez-vous vraiment vous déconnecter ?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                'Annuler',
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _handleLogout();
+              },
+              child: Text(
+                'Confirmer',
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 50.0),
               child: ElevatedButton(
-                onPressed: _handleLogout,
+                onPressed: _showLogoutConfirmation,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColor,
                 ),
