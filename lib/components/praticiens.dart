@@ -5,16 +5,32 @@ class Praticien {
   final String nom;
   final String prenom;
   final String specialite;
+  final Image avatar;
 
   Praticien(
-      {required this.nom, required this.prenom, required this.specialite});
+      {required this.nom,
+      required this.prenom,
+      required this.specialite,
+      required this.avatar});
 }
 
 class PraticiensList extends StatelessWidget {
   final List<Praticien> praticiens = [
-    Praticien(nom: 'Dupont', prenom: 'Jean', specialite: 'Cardiologue'),
-    Praticien(nom: 'Martin', prenom: 'Marie', specialite: 'Dermatologue'),
-    Praticien(nom: 'Durand', prenom: 'Pierre', specialite: 'Généraliste'),
+    Praticien(
+        nom: 'le malicieux',
+        prenom: 'Larry',
+        specialite: 'terriblement malicieux',
+        avatar: Image(image: AssetImage('assets/larry.webp'))),
+    Praticien(
+        nom: 'IA',
+        prenom: 'OI',
+        specialite: 'OIIA',
+        avatar: Image(image: AssetImage('assets/oiia.webp'))),
+    Praticien(
+        nom: 'Goupi',
+        prenom: 'Oupi',
+        specialite: 'yeepi',
+        avatar: Image(image: AssetImage('assets/oupi_goupi.webp'))),
     // Ajoutez d'autres praticiens ici
   ];
 
@@ -32,6 +48,9 @@ class PraticiensList extends StatelessWidget {
             child: ListTile(
               title: Text('${praticien.prenom} ${praticien.nom}'),
               subtitle: Text(praticien.specialite),
+              leading: CircleAvatar(
+                backgroundImage: praticien.avatar.image,
+              ),
               trailing: Icon(Icons.arrow_forward),
               onTap: () {
                 Navigator.push(
@@ -40,7 +59,6 @@ class PraticiensList extends StatelessWidget {
                     builder: (context) => AppointmentScreen(),
                   ),
                 );
-                
               },
             ),
           );
@@ -53,6 +71,5 @@ class PraticiensList extends StatelessWidget {
 void main() {
   runApp(MaterialApp(
     home: PraticiensList(),
-    
   ));
 }

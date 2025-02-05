@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 var primaryColor = const Color(0xFF5182BD);
 
 class ConsultationPage extends StatefulWidget {
-  const ConsultationPage({super.key});
+  final DateTime date;
+  final String timeSlot;
+
+  const ConsultationPage({super.key, required this.date, required this.timeSlot});
 
   @override
   State<ConsultationPage> createState() => _ConsultationPageState();
@@ -21,6 +24,21 @@ class _ConsultationPageState extends State<ConsultationPage> {
         ),
         automaticallyImplyLeading: false,
         backgroundColor: primaryColor,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Détails de la consultation',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text('Date : ${widget.date.toLocal()}'.split(' ')[0]),
+            Text('Heure : ${widget.timeSlot}'),
+          ],
+        ),
       ),
     );
   }

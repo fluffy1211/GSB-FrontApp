@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-
+import 'package:gsb/pages/consultation_page.dart';
 
 class MyRdv extends StatelessWidget {
   const MyRdv({super.key});
@@ -116,7 +115,18 @@ class _Horaires extends State<AppointmentScreen> {
             'Votre rendez-vous est confirmé pour le ${selectedDate.toLocal()} à $selectedTimeSlot.'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ConsultationPage(
+                    date: selectedDate,
+                    timeSlot: selectedTimeSlot!,
+                  ),
+                ),
+              );
+            },
             child: Text('OK'),
           ),
         ],
