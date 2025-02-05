@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gsb/components/api.dart';
+import 'package:gsb/services/auth/api.dart';
 import 'package:gsb/components/navigation.dart';
 import 'package:gsb/pages/register_page.dart';
 
