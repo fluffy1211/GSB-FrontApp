@@ -7,12 +7,14 @@ class Praticien {
   final String firstName;
   final String lastName;
   final String specialties;
+  final String? avatarPath;
 
   Praticien({
     required this.praticienId,
     required this.firstName,
     required this.lastName,
     required this.specialties,
+    this.avatarPath,
   });
 }
 
@@ -48,6 +50,7 @@ class _PraticiensListState extends State<PraticiensList> {
                     firstName: item['first_name'],
                     lastName: item['last_name'],
                     specialties: item['specialties'],
+                    avatarPath: item['avatarPath']?.toString(),
                   ))
               .toList();
           isLoading = false;
@@ -68,39 +71,49 @@ class _PraticiensListState extends State<PraticiensList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.only(top: 25.0),
-          child: const Text(
-            'Liste des praticiens'
-          ),
-        ),
+        title: const Text('Liste des praticiens'),
         automaticallyImplyLeading: false,
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : error != null
-              ? Center(child: Text('Erreur: $error'))
-              : ListView.builder(
-                  itemCount: praticiens.length,
-                  itemBuilder: (context, index) {
-                    final praticien = praticiens[index];
-                    return Card(
-                      child: ListTile(
-                        title: Text('${praticien.firstName} ${praticien.lastName}'),
-                        subtitle: Text(praticien.specialties),
-                        trailing: const Icon(Icons.arrow_forward),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const AppointmentScreen(),
+      body: Column(
+        children: [
+          const SizedBox(height: 30),
+          Expanded(
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : error != null
+                    ? Center(child: Text('Erreur: $error'))
+                    : ListView.builder(
+                        itemCount: praticiens.length,
+                        itemBuilder: (context, index) {
+                          final praticien = praticiens[index];
+                          return Card(
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                backgroundImage: praticien.avatarPath != null
+                                    ? AssetImage(praticien.avatarPath!)
+                                    : const AssetImage('assets/avatar.png'),
+                              ),
+                              title: Text('${praticien.firstName} ${praticien.lastName}'),
+                              subtitle: Text(praticien.specialties),
+                              trailing: const Icon(Icons.arrow_forward),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AppointmentScreen(
+                                      praticien: praticien,
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           );
                         },
                       ),
-                    );
-                  },
-                ),
+          ),
+        ],
+      ),
     );
   }
 
