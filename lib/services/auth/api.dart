@@ -56,3 +56,54 @@ Future<dynamic> createUser(Map<String, dynamic> data) async {
     throw Exception('Failed to create data');
   }
 }
+
+// REQUETE POUR LES PRATICIENS
+
+Future<dynamic> getPraticiens() async {
+  try {
+    final response = await http.get(
+      Uri.parse('http://localhost:3001/praticiens'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    print('API Status Code: ${response.statusCode}');
+    print('API Response Body: ${response.body}');
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to fetch praticiens: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('API Error: $e');
+    throw Exception('Failed to fetch praticiens');
+  }
+}
+
+// REQUETE POUR RECUPERER UN PRATICIEN PAR ID 
+
+Future<dynamic> getPraticienById(String id) async {
+  try {
+    final response = await http.get(
+      Uri.parse('http://localhost:3001/praticiens/$id'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    // Print de debug
+    print('Status Code: ${response.statusCode}');
+    print('Response Body: ${response.body}');
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to create data: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('API Error: $e');
+    throw Exception('Failed to create data');
+  }
+}
