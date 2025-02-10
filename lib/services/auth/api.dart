@@ -13,10 +13,6 @@ Future<dynamic> loginUser(Map<String, dynamic> data) async {
       body: jsonEncode(data),
     );
 
-    // Print de debug
-    print('Status Code: ${response.statusCode}');
-    print('Response Body: ${response.body}');
-
     // Check for both 200 and 201 status codes
     if (response.statusCode == 200 || response.statusCode == 201) {
       final responseData = jsonDecode(response.body);
@@ -42,10 +38,6 @@ Future<dynamic> createUser(Map<String, dynamic> data) async {
       body: jsonEncode(data),
     );
 
-    // Print de debug
-    print('Status Code: ${response.statusCode}');
-    print('Response Body: ${response.body}');
-
     if (response.statusCode == 200 || response.statusCode == 201) {
       return jsonDecode(response.body);
     } else {
@@ -68,9 +60,6 @@ Future<dynamic> getPraticiens() async {
       },
     );
 
-    print('API Status Code: ${response.statusCode}');
-    print('API Response Body: ${response.body}');
-
     if (response.statusCode == 200 || response.statusCode == 201) {
       return jsonDecode(response.body);
     } else {
@@ -92,10 +81,6 @@ Future<dynamic> getPraticienById(String id) async {
         'Content-Type': 'application/json',
       },
     );
-
-    // Print de debug
-    print('Status Code: ${response.statusCode}');
-    print('Response Body: ${response.body}');
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       return jsonDecode(response.body);
