@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:flutter/cupertino.dart';
 
+// COULEUR GSB
+var primaryColor = const Color(0xFF5182BD);
+
 class SymptomsDropdown extends StatelessWidget {
   final MultiSelectController<String>? controller;
   final Function(List<String>)? onSelectionChange;
@@ -32,11 +35,12 @@ class SymptomsDropdown extends StatelessWidget {
               maxSelections: 3,
               enabled: true,
               searchEnabled: false,
-              chipDecoration: const ChipDecoration(
-                backgroundColor: Colors.green,
+              chipDecoration: ChipDecoration(
+                backgroundColor: primaryColor,
                 wrap: true,
                 runSpacing: 2,
                 spacing: 10,
+                labelStyle: const TextStyle(color: Colors.white),
               ),
               fieldDecoration: FieldDecoration(
                 hintText: 'Symptômes',
@@ -55,7 +59,7 @@ class SymptomsDropdown extends StatelessWidget {
                 ),
               ),
               dropdownDecoration: const DropdownDecoration(
-                maxHeight: 305,
+                maxHeight: 325,
                 header: Padding(
                   padding: EdgeInsets.all(8),
                   child: Text(
