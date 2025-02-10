@@ -92,3 +92,25 @@ Future<dynamic> getPraticienById(String id) async {
     throw Exception('Failed to create data');
   }
 }
+
+Future<dynamic> createAppointment(Map<String, dynamic> appointmentData) async {
+  // Retrieve the stored token
+  try {
+    final response = await http.post(
+      Uri.parse('http://localhost:3001/appointments/create'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(appointmentData),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to create appointment: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('API Error: $e');
+    throw Exception('Failed to create appointment');
+  }
+}

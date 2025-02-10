@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../components/praticiens.dart';
 import '../components/symptoms.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
+
 
 // COULEUR GSB
 var primaryColor = const Color(0xFF5182BD);
@@ -34,6 +36,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   DateTime selectedDate = DateTime.now();
   String? selectedTimeSlot;
   Map<DateTime, List<String>> availableTimeSlots = {};
+
+  final MultiSelectController<String> symptomController = MultiSelectController<String>();
 
   @override
   void initState() {
@@ -190,7 +194,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                         )
                       : const Text('Aucun créneau disponible pour cette date.'),
                   const SizedBox(height: 8),
-                  SymptomsDropdown(),
+                  SymptomsDropdown(controller: symptomController),
                 ],
               ),
             ),
@@ -201,7 +205,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
               width: 260,
               height: 35,
               child: ElevatedButton(
-                onPressed: selectedTimeSlot != null ? () => _confirmAppointment(context) : null,
+                onPressed: selectedTimeSlot != null && symptomController.selectedItems.isNotEmpty
+                    ? () => _confirmAppointment(context)
+                    : null,
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
                     return selectedTimeSlot != null ? primaryColor : Colors.grey[300]!;
