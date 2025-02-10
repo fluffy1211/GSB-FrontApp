@@ -76,7 +76,6 @@ class _PraticiensListState extends State<PraticiensList> {
       ),
       body: Column(
         children: [
-          const SizedBox(height: 30),
           Expanded(
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())

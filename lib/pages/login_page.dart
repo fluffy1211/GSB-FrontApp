@@ -36,7 +36,7 @@ class _WelcomeState extends State<Welcome> {
         SnackBar(
             duration: const Duration(seconds: 3),
             content: Text(
-              "L'utilisateur n'existe pas",
+              "L'utilisateur / mot de passe est incorrect",
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 20),
             ),

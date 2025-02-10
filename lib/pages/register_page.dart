@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gsb/services/auth/api.dart';
 import 'package:gsb/pages/login_page.dart';
-import 'package:gsb/components/navigation.dart';
 
 // COULEUR GSB
 var primaryColor = const Color(0xFF5182BD);
@@ -65,11 +64,27 @@ class _RegisterFormState extends State<RegisterForm> {
           'confirmPassword': _confirmPasswordController.text,
         });
 
-        // REDIRECT SUR LA Home Page
+        // REDIRECT SUR LA HOME PAGE
         if (response != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MainNavigation()),
+          await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Inscription réussie'),
+                content: const Text('Votre compte a été créé avec succès.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Welcome()),
+                      );
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
           );
         }
       }
