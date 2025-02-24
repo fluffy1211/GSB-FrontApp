@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import '../pages/home_page.dart';
-import '../pages/profile_page.dart';
 import '../pages/consultation_page.dart';
+import '../pages/praticiens_page.dart';
+import '../pages/profile_page.dart';
 
-class MainNavigation extends StatefulWidget {
-  const MainNavigation({super.key});
+class NavigationPage extends StatefulWidget {
+  const NavigationPage({super.key});
 
   @override
-  _MainNavigationState createState() => _MainNavigationState();
+  State<NavigationPage> createState() => _NavigationPageState();
 }
 
-class _MainNavigationState extends State<MainNavigation> {
+class _NavigationPageState extends State<NavigationPage> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
+  static const List<Widget> _pages = <Widget>[
     ConsultationPage(),
-    HomePage(),
+    PraticiensPage(),
     ProfilePage(),
   ];
 
@@ -28,16 +28,18 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: _pages[_selectedIndex]),
+      body: Center(
+        child: _pages.elementAt(_selectedIndex),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            label: 'Consultations',
+            icon: Icon(Icons.calendar_today),
+            label: 'Rendez-vous',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Accueil',
+            icon: Icon(Icons.people),
+            label: 'Praticiens',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
