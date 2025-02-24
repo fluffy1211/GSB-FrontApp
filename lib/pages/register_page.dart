@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gsb/services/auth/api.dart';
 import 'package:gsb/pages/login_page.dart';
-
-// COULEUR GSB
-var primaryColor = const Color(0xFF5182BD);
+import '../constants/styles.dart';
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({super.key});
@@ -25,7 +23,6 @@ class _RegisterFormState extends State<RegisterForm> {
   Future<void> _handleRegister() async {
     try {
       if (_registerFormKey.currentState!.validate()) {
-
         // CHECK SI LE MAIL EST VALIDE
         if (!emailRegex.hasMatch(_emailController.text)) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -129,7 +126,7 @@ class _RegisterFormState extends State<RegisterForm> {
           const SizedBox(height: 20),
           GestureDetector(
             onTap: () {
-              print("button working");
+              print("Redirection vers la page de connexion");
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const Welcome()),
@@ -189,7 +186,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   )),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Veuillez entrer votre mot de passe';
+                  return 'Veuillez entrer votre adresse email';
                 }
                 return null;
               },

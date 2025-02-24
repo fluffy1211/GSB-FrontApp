@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/appointment.dart';
 import '../services/auth/api.dart';
+import '../constants/styles.dart'; // Ajouter l'import
 
 class ConsultationPage extends StatefulWidget {
   const ConsultationPage({super.key});
@@ -46,15 +47,15 @@ class _ConsultationPageState extends State<ConsultationPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Confirmation'),
-        content: const Text('Voulez-vous vraiment annuler ce rendez-vous ?'),
+        content: const Text('Êtes-vous sûr de vouloir annuler ce rendez-vous ?'), // Amélioration du texte
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Non'),
+            child: const Text('Non, annuler'), // Plus explicite
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Oui'),
+            child: const Text('Oui, supprimer'), // Plus explicite
           ),
         ],
       ),
@@ -63,13 +64,13 @@ class _ConsultationPageState extends State<ConsultationPage> {
     if (confirmed == true) {
       try {
         await cancelAppointment(appointment.appointmentId);
-        // Recharger la liste après suppression
         await _loadAppointments();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Rendez-vous annulé avec succès'),
               backgroundColor: Colors.green,
+              duration: Duration(seconds: 2), // Ajouter cette ligne
             ),
           );
         }
@@ -91,7 +92,7 @@ class _ConsultationPageState extends State<ConsultationPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mes Rendez-vous', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xFF5182BD),
+        backgroundColor: primaryColor, // Utiliser primaryColor
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())

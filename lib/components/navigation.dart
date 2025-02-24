@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../pages/consultation_page.dart';
 import '../pages/praticiens_page.dart';
 import '../pages/profile_page.dart';
+import '../constants/styles.dart'; // Ajouter l'import
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({super.key});
@@ -47,7 +48,9 @@ class _NavigationPageState extends State<NavigationPage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: const Color(0xFF5182BD),
+        selectedItemColor: primaryColor, // Utiliser primaryColor
+        unselectedItemColor: Colors.grey, // Ajouter cette ligne
+        type: BottomNavigationBarType.fixed, // Ajouter cette ligne
         onTap: _onItemTapped,
       ),
     );

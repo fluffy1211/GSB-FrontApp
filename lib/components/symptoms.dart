@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart'; // Ajouter cet import
 import 'package:multi_dropdown/multi_dropdown.dart';
-import 'package:flutter/cupertino.dart';
-
-// COULEUR GSB
-var primaryColor = const Color(0xFF5182BD);
+import '../constants/styles.dart';
 
 class SymptomsDropdown extends StatefulWidget {
   final MultiSelectController<String>? controller;
@@ -70,7 +68,7 @@ class _SymptomsDropdownState extends State<SymptomsDropdown> {
                 header: Padding(
                   padding: EdgeInsets.all(8),
                   child: Text(
-                    'Séléctionnez vos symptômes',
+                    'Sélectionnez vos symptômes', // Correction de l'orthographe
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       fontSize: 16,
@@ -86,7 +84,7 @@ class _SymptomsDropdownState extends State<SymptomsDropdown> {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please select a country';
+                  return 'Veuillez sélectionner au moins un symptôme'; // Correction du texte anglais
                 }
                 return null;
               },
