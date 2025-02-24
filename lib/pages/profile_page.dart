@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gsb/pages/login_page.dart';
 import '../services/auth/session_manager.dart';
 import '../components/navigation.dart';
-
-// COULEUR GSB
-var primaryColor = const Color(0xFF5182BD);
+import '../constants/styles.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -49,20 +47,16 @@ class _ProfilePageState extends State<ProfilePage> {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                'Annuler',
-                style: TextStyle(color: Colors.black),
-              ),
+              style: TextButton.styleFrom(foregroundColor: primaryColor),
+              child: const Text('Annuler'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 _handleLogout();
               },
-              child: Text(
-                'Confirmer',
-                style: TextStyle(color: Colors.black),
-              ),
+              style: TextButton.styleFrom(foregroundColor: primaryColor),
+              child: const Text('Confirmer'),
             ),
           ],
         );
@@ -87,19 +81,17 @@ class _ProfilePageState extends State<ProfilePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            // Message de bienvenue simplifié
             Center(
               child: Text(
                 'Bienvenue ${userName ?? ''}',
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF5182BD),
+                  color: primaryColor,
                 ),
               ),
             ),
             const SizedBox(height: 40),
-            // Raccourci unique pour les rendez-vous
             Card(
               child: InkWell(
                 onTap: () {
@@ -109,13 +101,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   );
                 },
-                child: const Padding(
-                  padding: EdgeInsets.all(16.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: Row(
                     children: [
-                      Icon(Icons.calendar_today, color: Color(0xFF5182BD), size: 30),
-                      SizedBox(width: 16),
-                      Text(
+                      Icon(Icons.calendar_today, color: primaryColor, size: 30),
+                      const SizedBox(width: 16),
+                      const Text(
                         'Voir mes rendez-vous',
                         style: TextStyle(
                           fontSize: 18,
@@ -128,7 +120,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             const Spacer(),
-            // Bouton déconnexion
             Center(
               child: ElevatedButton(
                 onPressed: _showLogoutConfirmation,

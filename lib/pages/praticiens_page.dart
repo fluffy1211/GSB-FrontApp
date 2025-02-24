@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../components/praticiens.dart';
 import '../services/auth/api.dart';
 import 'rdv_page.dart';
+import '../constants/styles.dart'; // Ajouter l'import
 
 class PraticiensPage extends StatefulWidget {
   const PraticiensPage({super.key});
@@ -54,7 +55,7 @@ class _PraticiensPageState extends State<PraticiensPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Liste des Praticiens', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xFF5182BD),
+        backgroundColor: primaryColor, // Utiliser primaryColor
         automaticallyImplyLeading: false,
       ),
       body: isLoading
@@ -88,7 +89,7 @@ class _PraticiensPageState extends State<PraticiensPage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF5182BD),
+                            backgroundColor: primaryColor, // Utiliser primaryColor
                           ),
                           child: const Text(
                             'Prendre RDV',

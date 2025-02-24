@@ -4,9 +4,9 @@ import '../components/symptoms.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'dart:async';
 import '../services/auth/api.dart';
+import '../constants/styles.dart';
 
 // COULEUR GSB
-var primaryColor = const Color(0xFF5182BD);
 
 class AppointmentScreen extends StatefulWidget {
   final Praticien praticien;
@@ -111,11 +111,10 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         ),
       );
     } catch (e) {
-      // Afficher l'erreur
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Erreur lors de la confirmation du rendez-vous: ${e.toString()}'),
+          content: Text('Une erreur est survenue. Veuillez réessayer plus tard.'), // Message d'erreur plus clair
           backgroundColor: Colors.red,
         ),
       );
@@ -219,7 +218,13 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                 );
                               }).toList(),
                             )
-                          : const Text('Aucun créneau disponible pour cette date.'),
+                          : Text(
+                              'Aucun créneau disponible pour cette date.',
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontStyle: FontStyle.italic, // Amélioration du style
+                              ),
+                            ),
                     ],
                   ),
                   const SizedBox(height: 10),
