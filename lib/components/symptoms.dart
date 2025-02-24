@@ -5,12 +5,19 @@ import 'package:flutter/cupertino.dart';
 // COULEUR GSB
 var primaryColor = const Color(0xFF5182BD);
 
-class SymptomsDropdown extends StatelessWidget {
+class SymptomsDropdown extends StatefulWidget {
   final MultiSelectController<String>? controller;
   final Function(List<String>)? onSelectionChange;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  SymptomsDropdown({super.key, this.controller, this.onSelectionChange});
+  const SymptomsDropdown({super.key, this.controller, this.onSelectionChange});
+
+  @override
+  State<SymptomsDropdown> createState() => _SymptomsDropdownState();
+}
+
+class _SymptomsDropdownState extends State<SymptomsDropdown> {
+  final _formKey = GlobalKey<FormState>();
+  bool _isOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +30,7 @@ class SymptomsDropdown extends StatelessWidget {
     ];
 
     return Padding(
-      padding: const EdgeInsets.all(6),
+      padding: const EdgeInsets.symmetric(vertical: 2), // Réduit de 6 à 2
       child: Form(
         key: _formKey,
         child: Column(
@@ -31,7 +38,7 @@ class SymptomsDropdown extends StatelessWidget {
           children: [
             MultiDropdown<String>(
               items: items,
-              controller: controller,
+              controller: widget.controller,
               maxSelections: 3,
               enabled: true,
               searchEnabled: false,
@@ -59,7 +66,7 @@ class SymptomsDropdown extends StatelessWidget {
                 ),
               ),
               dropdownDecoration: const DropdownDecoration(
-                maxHeight: 325,
+                maxHeight: 325, // Remettre la hauteur d'origine pour permettre le scroll
                 header: Padding(
                   padding: EdgeInsets.all(8),
                   child: Text(
@@ -84,7 +91,12 @@ class SymptomsDropdown extends StatelessWidget {
                 return null;
               },
               onSelectionChange: (selectedItems) {
-                debugPrint("OnSelectionChange: $selectedItems");
+                if (widget.onSelectionChange != null) {
+                  widget.onSelectionChange!(selectedItems);
+                }
+                if (mounted && !_isOpen) {
+                  setState(() => _isOpen = true);
+                }
               },
             ),
           ],

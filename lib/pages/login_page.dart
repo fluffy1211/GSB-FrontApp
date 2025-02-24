@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gsb/services/auth/api.dart';
 import 'package:gsb/components/navigation.dart';
+import 'package:gsb/services/auth/api.dart';
 import 'package:gsb/pages/register_page.dart';
 
 class Welcome extends StatefulWidget {
@@ -20,28 +20,31 @@ class _WelcomeState extends State<Welcome> {
     try {
       if (_loginFormKey.currentState!.validate()) {
         final response = await loginUser({
-          'email': _usernameController.text,
+          'email': _usernameController.text, // Changed from 'username' to 'email'
           'password': _passwordController.text,
         });
 
-        if (response != null) {
-          Navigator.push(
+        if (response != null && mounted) {
+          Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => MainNavigation()),
+            MaterialPageRoute(builder: (context) => const NavigationPage()),
           );
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
             duration: const Duration(seconds: 3),
             content: Text(
-              "L'utilisateur / mot de passe est incorrect",
+              e.toString().replaceAll('Exception: ', ''),
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 20),
             ),
-            backgroundColor: const Color.fromARGB(255, 241, 16, 38)),
-      );
+            backgroundColor: const Color.fromARGB(255, 241, 16, 38),
+          ),
+        );
+      }
     }
   }
 
@@ -104,7 +107,7 @@ class _WelcomeState extends State<Welcome> {
             child: TextFormField(
               controller: _usernameController,
               decoration: InputDecoration(
-                hintText: 'Nom',
+                hintText: 'Email ou Nom', // Updated hint text
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: primaryColor, width: 2),
                 ),
@@ -114,7 +117,7 @@ class _WelcomeState extends State<Welcome> {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Veuillez entrer votre nom';
+                  return 'Veuillez entrer votre email ou nom';
                 }
                 return null;
               },

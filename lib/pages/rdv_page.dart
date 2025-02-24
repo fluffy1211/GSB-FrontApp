@@ -2,23 +2,11 @@ import 'package:flutter/material.dart';
 import '../components/praticiens.dart';
 import '../components/symptoms.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
-
+import 'dart:async';
+import '../services/auth/api.dart';
 
 // COULEUR GSB
 var primaryColor = const Color(0xFF5182BD);
-
-class MyRdv extends StatelessWidget {
-  const MyRdv({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Prise de Rendez-vous',
-      home: AppointmentScreen(
-          praticien: Praticien(praticienId: 1, firstName: 'John', lastName: 'Doe', specialties: 'Cardiology')),
-    );
-  }
-}
 
 class AppointmentScreen extends StatefulWidget {
   final Praticien praticien;
@@ -39,21 +27,29 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
   final MultiSelectController<String> symptomController = MultiSelectController<String>();
 
+  bool get isFormValid => selectedTimeSlot != null && symptomController.selectedItems.isNotEmpty;
+
   @override
   void initState() {
     super.initState();
     _initializeTimeSlots();
   }
 
+  @override
+  void dispose() {
+    symptomController.dispose();
+    super.dispose();
+  }
+
   void _initializeTimeSlots() {
-    // Generate slots for next 7 days
-    for (int i = 0; i < 999; i++) {
-      DateTime date = DateTime.now().add(Duration(days: i));
-      // Remove time component for comparison
-      date = DateTime(date.year, date.month, date.day);
-      availableTimeSlots[date] = ['09h00', '10h00', '11h00', '12h00', '13h00', '14h00', '15h00', '16h00'];
-    }
-    setState(() {});
+    if (!mounted) return;
+    setState(() {
+      for (int i = 0; i < 999; i++) {
+        DateTime date = DateTime.now().add(Duration(days: i));
+        date = DateTime(date.year, date.month, date.day);
+        availableTimeSlots[date] = ['09h00', '10h00', '11h00', '12h00', '13h00', '14h00', '15h00', '16h00'];
+      }
+    });
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -77,7 +73,24 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     if (selectedTimeSlot == null) return;
 
     try {
-      // Add API call here to save appointment
+      // Extraire seulement les valeurs des symptômes
+      final List<String> symptoms = symptomController.selectedItems
+          .map((item) => item.value) // Récupérer seulement la valeur de chaque DropdownItem
+          .toList();
+
+      // Préparer les données pour l'API
+      final appointmentData = {
+        'praticienId': widget.praticien.praticienId,
+        'date': selectedDate.toIso8601String().split('T')[0],
+        'timeSlot': selectedTimeSlot,
+        'symptoms': symptoms, // Envoyer la liste des valeurs
+      };
+
+      // Appeler l'API
+      final result = await createAppointment(appointmentData);
+
+      // Afficher la confirmation
+      if (!mounted) return;
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -89,8 +102,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
+                Navigator.pop(context); // Fermer la boîte de dialogue
+                Navigator.pop(context); // Retourner à l'écran précédent
               },
               child: const Text('OK'),
             ),
@@ -98,8 +111,13 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         ),
       );
     } catch (e) {
+      // Afficher l'erreur
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Erreur lors de la confirmation du rendez-vous')),
+        SnackBar(
+          content: Text('Erreur lors de la confirmation du rendez-vous: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -120,7 +138,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(30.0),
+              padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0), // Réduit padding vertical à 10
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -156,13 +174,15 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 10), // Réduit de 24 à 10
                     ],
                   ),
+                  const SizedBox(height: 5), // Réduit de 15 à 5
                   const Text(
                     'Sélectionnez une date :',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // Réduit taille police
                   ),
+                  const SizedBox(height: 5),
                   ElevatedButton(
                     onPressed: () => _selectDate(context),
                     child: Text(
@@ -170,50 +190,80 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Créneaux horaires disponibles :',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  const SizedBox(height: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Créneaux horaires disponibles :',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // Réduit taille police
+                      ),
+                      const SizedBox(height: 5),
+                      slots.isNotEmpty
+                          ? Wrap(
+                              spacing: 8, // Réduit espacement horizontal
+                              runSpacing: 8, // Réduit espacement vertical
+                              children: slots.map((time) {
+                                return ChoiceChip(
+                                  label: Text(time),
+                                  selected: selectedTimeSlot == time,
+                                  selectedColor: primaryColor,
+                                  labelStyle: TextStyle(
+                                    color: selectedTimeSlot == time ? Colors.white : Colors.black,
+                                  ),
+                                  onSelected: (selected) {
+                                    setState(() {
+                                      selectedTimeSlot = selected ? time : null;
+                                    });
+                                  },
+                                );
+                              }).toList(),
+                            )
+                          : const Text('Aucun créneau disponible pour cette date.'),
+                    ],
                   ),
-                  const SizedBox(height: 1),
-                  slots.isNotEmpty
-                      ? Wrap(
-                          spacing: 10,
-                          runSpacing: 10,
-                          children: slots.map((time) {
-                            return ChoiceChip(
-                              label: Text(time),
-                              selected: selectedTimeSlot == time,
-                              onSelected: (selected) {
-                                setState(() {
-                                  selectedTimeSlot = selected ? time : null;
-                                });
-                              },
-                            );
-                          }).toList(),
-                        )
-                      : const Text('Aucun créneau disponible pour cette date.'),
-                  const SizedBox(height: 8),
-                  SymptomsDropdown(controller: symptomController),
+                  const SizedBox(height: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Symptômes :',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // Réduit taille police
+                      ),
+                      SymptomsDropdown(
+                        controller: symptomController,
+                        onSelectionChange: (selectedItems) {
+                          setState(() {}); // Simple setState pour mettre à jour le bouton
+                        },
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
           ),
+          if (!isFormValid)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Text(
+                'Veuillez sélectionner un horaire et au moins un symptôme',
+                style: TextStyle(color: Colors.red[700], fontSize: 12),
+                textAlign: TextAlign.center,
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: SizedBox(
               width: 260,
               height: 35,
               child: ElevatedButton(
-                onPressed: selectedTimeSlot != null && symptomController.selectedItems.isNotEmpty
-                    ? () => _confirmAppointment(context)
-                    : null,
+                onPressed: isFormValid ? () => _confirmAppointment(context) : null,
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-                    return selectedTimeSlot != null ? primaryColor : Colors.grey[300]!;
+                    return isFormValid ? primaryColor : Colors.grey[300]!;
                   }),
                   foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-                    return selectedTimeSlot != null ? Colors.white : Colors.grey[600]!;
+                    return isFormValid ? Colors.white : Colors.grey[600]!;
                   }),
                   animationDuration: const Duration(milliseconds: 500),
                 ),
