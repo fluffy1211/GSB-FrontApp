@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/appointment.dart';
 import '../services/auth/api.dart';
-import '../constants/styles.dart'; // Ajouter l'import
+import '../constants/styles.dart';
 
 class ConsultationPage extends StatefulWidget {
   const ConsultationPage({super.key});

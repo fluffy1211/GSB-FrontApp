@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:gsb/pages/login_page.dart';
-import '../services/auth/session_manager.dart';
-import '../components/navigation.dart';
-import '../constants/styles.dart';
+import 'package:gsb/constants/styles.dart';
+import 'package:gsb/services/auth/session_manager.dart';
+import 'package:gsb/services/auth/auth_service.dart';
+import 'package:gsb/pages/admin.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final Function(int)? onNavigationRequest;
+
+  const ProfilePage({super.key, this.onNavigationRequest});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -13,55 +15,24 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String? userName;
+  bool isAdmin = false;
 
   @override
   void initState() {
     super.initState();
-    _loadUserName();
+    _loadUserData();
   }
 
-  Future<void> _loadUserName() async {
+  Future<void> _loadUserData() async {
     final name = await getUserName();
-    setState(() {
-      userName = name;
-    });
-  }
+    final isUserAdmin = await AuthService.isUserAdmin();
 
-  Future<void> _handleLogout() async {
-    await removeToken(); // Supprime le token
-    await removeUserName(); // Supprime le nom d'utilisateur
-    if (!mounted) return;
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const Welcome()),
-      (Route<dynamic> route) => false,
-    );
-  }
-
-  Future<void> _showLogoutConfirmation() async {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirmation'),
-          content: const Text('Voulez-vous vraiment vous déconnecter ?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: TextButton.styleFrom(foregroundColor: primaryColor),
-              child: const Text('Annuler'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _handleLogout();
-              },
-              style: TextButton.styleFrom(foregroundColor: primaryColor),
-              child: const Text('Confirmer'),
-            ),
-          ],
-        );
-      },
-    );
+    if (mounted) {
+      setState(() {
+        userName = name;
+        isAdmin = isUserAdmin;
+      });
+    }
   }
 
   @override
@@ -69,73 +40,134 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Votre profil",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          'Mon Profil',
+          style: TextStyle(color: Colors.white),
         ),
-        automaticallyImplyLeading: false,
         backgroundColor: primaryColor,
+        automaticallyImplyLeading: false,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 20),
-            Center(
-              child: Text(
-                'Bienvenue ${userName ?? ''}',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: primaryColor,
-                ),
+
+            // Avatar
+            const CircleAvatar(
+              radius: 50,
+              backgroundColor: Color.fromARGB(255, 225, 225, 225),
+              child: Icon(
+                Icons.person,
+                size: 60,
+                color: Colors.grey,
               ),
             ),
+
+            const SizedBox(height: 20),
+
+            // Nom d'utilisateur
+            Text(
+              userName ?? 'Chargement...',
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
             const SizedBox(height: 40),
-            Card(
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => const NavigationPage(),
-                    ),
+
+            // Menu d'options - Navigate to appointments tab
+            _buildProfileOption(
+              'Mes rendez-vous',
+              Icons.calendar_today,
+              () {
+                // Navigate to the appointments tab (index 0)
+                if (widget.onNavigationRequest != null) {
+                  widget.onNavigationRequest!(0);
+                }
+              },
+            ),
+
+            // Admin button - only shown for admin users
+            if (isAdmin)
+              _buildProfileOption(
+                'Administration',
+                Icons.admin_panel_settings,
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AdminPage()),
                   );
                 },
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Icon(Icons.calendar_today, color: primaryColor, size: 30),
-                      const SizedBox(width: 16),
-                      const Text(
-                        'Voir mes rendez-vous',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
+                isAdmin: true,
+              ),
+
+            const SizedBox(height: 30),
+
+            // Logout button
+            ElevatedButton.icon(
+              onPressed: () async {
+                await removeToken();
+                await removeUserName();
+                await removeUserRole();
+
+                if (mounted) {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/',
+                    (route) => false,
+                  );
+                }
+              },
+              icon: const Icon(Icons.logout, color: Colors.white),
+              label: const Text(
+                'Déconnexion',
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 12,
                 ),
               ),
             ),
-            const Spacer(),
-            Center(
-              child: ElevatedButton(
-                onPressed: _showLogoutConfirmation,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                ),
-                child: const Text(
-                  'Déconnexion',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildProfileOption(
+    String title,
+    IconData icon,
+    VoidCallback onTap, {
+    bool isAdmin = false,
+  }) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 15),
+      elevation: 2,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 10,
+        ),
+        leading: Icon(
+          icon,
+          size: 30,
+          color: isAdmin ? Colors.red : primaryColor,
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: isAdmin ? Colors.red : Colors.black87,
+          ),
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios),
+        onTap: onTap,
       ),
     );
   }
