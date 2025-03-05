@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../pages/consultation_page.dart';
 import '../pages/praticiens_page.dart';
 import '../pages/profile_page.dart';
-import '../constants/styles.dart'; // Ajouter l'import
+import '../constants/styles.dart';
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({super.key});
@@ -14,11 +14,19 @@ class NavigationPage extends StatefulWidget {
 class _NavigationPageState extends State<NavigationPage> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _pages = <Widget>[
-    ConsultationPage(),
-    PraticiensPage(),
-    ProfilePage(),
-  ];
+  // Method to navigate to a specific tab
+  void navigateToTab(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  // Updated to pass the navigation callback to ProfilePage
+  List<Widget> get _pages => <Widget>[
+        const ConsultationPage(),
+        const PraticiensPage(),
+        ProfilePage(onNavigationRequest: navigateToTab),
+      ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -48,9 +56,9 @@ class _NavigationPageState extends State<NavigationPage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: primaryColor, // Utiliser primaryColor
-        unselectedItemColor: Colors.grey, // Ajouter cette ligne
-        type: BottomNavigationBarType.fixed, // Ajouter cette ligne
+        selectedItemColor: primaryColor,
+        unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed,
         onTap: _onItemTapped,
       ),
     );

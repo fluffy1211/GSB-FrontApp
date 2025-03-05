@@ -24,11 +24,16 @@ Future<dynamic> loginUser(Map<String, dynamic> data) async {
       final responseData = jsonDecode(response.body);
       await storeToken(responseData['token']);
 
-      // Décoder le token pour obtenir le nom
+      // Décoder le token pour obtenir le nom et le rôle
       final token = responseData['token'];
       final parts = token.split('.');
       final payload = jsonDecode(utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))));
       await storeUserName(payload['name']); // Utiliser le nom du token
+
+      // Store user role if available
+      if (payload['role'] != null) {
+        await storeUserRole(payload['role']);
+      }
 
       return responseData;
     } else {
@@ -204,6 +209,107 @@ Future<dynamic> cancelAppointment(int appointmentId) async {
     }
   } catch (e) {
     print('API Error: $e');
+    rethrow;
+  }
+}
+
+// REQUETE POUR AJOUTER UN PRATICIEN
+Future<dynamic> addPraticien(Map<String, dynamic> data) async {
+  try {
+    print('Starting addPraticien function with data: ${jsonEncode(data)}');
+    final token = await getToken();
+    print('Retrieved token: ${token != null ? 'Token exists' : 'Token is null'}');
+
+    if (token == null) throw Exception('No token found');
+
+    final url = 'http://localhost:3001/admin/addPraticien';
+    print('Sending POST request to: $url');
+
+    final body = jsonEncode({
+      'first_name': data['first_name'],
+      'last_name': data['last_name'],
+      'specialties': data['specialties'],
+      'avatarPath': data['avatarPath'] ?? '',
+    });
+    print('Request body: $body');
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: body,
+    );
+
+    print('Response status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 201) {
+      final responseData = jsonDecode(response.body);
+      print('Success: Practitioner added successfully');
+      return responseData;
+    } else {
+      print('Error: Non-success status code received: ${response.statusCode}');
+      try {
+        final errorData = jsonDecode(response.body);
+        print('Error data: $errorData');
+        throw Exception(errorData['error'] ?? 'Failed to add praticien');
+      } catch (e) {
+        print('Error parsing error response: $e');
+        throw Exception('Failed to add praticien: ${response.body}');
+      }
+    }
+  } catch (e) {
+    print('API Error in addPraticien: $e');
+    rethrow;
+  }
+}
+
+// REQUETE POUR SUPPRIMER UN PRATICIEN
+Future<dynamic> removePraticien(int praticienId) async {
+  try {
+    print('Starting removePraticien function for ID: $praticienId');
+    final token = await getToken();
+    print('Retrieved token: ${token != null ? 'Token exists' : 'Token is null'}');
+
+    if (token == null) throw Exception('No token found');
+
+    final url = 'http://localhost:3001/admin/praticien/$praticienId';
+    print('Sending DELETE request to: $url');
+
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print('Response status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      final appointmentsRemoved = responseData['appointmentsRemoved'] ?? 0;
+      print('Success: Practitioner removed successfully with $appointmentsRemoved associated appointments');
+      return responseData;
+    } else if (response.statusCode == 404) {
+      print('Error: Practitioner not found');
+      throw Exception('Praticien non trouvé');
+    } else {
+      print('Error: Non-success status code received: ${response.statusCode}');
+      try {
+        final errorData = jsonDecode(response.body);
+        print('Error data: $errorData');
+        throw Exception(errorData['error'] ?? 'Failed to remove praticien');
+      } catch (e) {
+        print('Error parsing error response: $e');
+        throw Exception('Failed to remove praticien: ${response.body}');
+      }
+    }
+  } catch (e) {
+    print('API Error in removePraticien: $e');
     rethrow;
   }
 }
