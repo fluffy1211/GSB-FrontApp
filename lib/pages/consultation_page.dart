@@ -51,11 +51,11 @@ class _ConsultationPageState extends State<ConsultationPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Non, annuler'), // Plus explicite
+            child: const Text('Non'), // Plus explicite
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Oui, supprimer'), // Plus explicite
+            child: const Text('Oui'), // Plus explicite
           ),
         ],
       ),
