@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCalendarsUsageDescription</key>
+	<string>L'application a besoin d'accéder à votre calendrier pour gérer vos rendez-vous.</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>L'application a besoin d'accéder à vos rappels pour gérer vos rendez-vous.</string>
 </dict>
 </plist>
