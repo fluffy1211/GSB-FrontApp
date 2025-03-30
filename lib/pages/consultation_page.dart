@@ -94,38 +94,44 @@ class _ConsultationPageState extends State<ConsultationPage> {
         title: const Text('Mes Rendez-vous', style: TextStyle(color: Colors.white)),
         backgroundColor: primaryColor, // Utiliser primaryColor
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : appointments.isEmpty
-              ? const Center(child: Text('Aucun rendez-vous trouvé'))
-              : ListView.builder(
-                  itemCount: appointments.length,
-                  itemBuilder: (context, index) {
-                    final appointment = appointments[index];
-                    return Card(
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: ListTile(
-                        title: Text(
-                          'Dr. ${appointment.praticienFirstName} ${appointment.praticienLastName}',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Date: ${appointment.date.toLocal().toString().split(' ')[0]}'),
-                            Text('Heure: ${appointment.time}'),
-                            Text('Spécialité: ${appointment.praticienSpecialties}'),
-                            Text('Symptômes: ${appointment.symptoms.join(", ")}'),
-                          ],
-                        ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _confirmCancelAppointment(appointment),
-                        ),
+      body: Column(
+        children: [
+          Expanded(
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : appointments.isEmpty
+                    ? const Center(child: Text('Aucun rendez-vous trouvé'))
+                    : ListView.builder(
+                        itemCount: appointments.length,
+                        itemBuilder: (context, index) {
+                          final appointment = appointments[index];
+                          return Card(
+                            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            child: ListTile(
+                              title: Text(
+                                'Dr. ${appointment.praticienFirstName} ${appointment.praticienLastName}',
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Date: ${appointment.date.toLocal().toString().split(' ')[0]}'),
+                                  Text('Heure: ${appointment.time}'),
+                                  Text('Spécialité: ${appointment.praticienSpecialties}'),
+                                  Text('Symptômes: ${appointment.symptoms.join(", ")}'),
+                                ],
+                              ),
+                              trailing: IconButton(
+                                icon: const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () => _confirmCancelAppointment(appointment),
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
+          ),
+        ],
+      ),
     );
   }
 }

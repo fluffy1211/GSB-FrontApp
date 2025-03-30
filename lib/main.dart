@@ -4,7 +4,9 @@ import 'package:gsb/pages/login_page.dart';
 // COULEUR GSB
 var primaryColor = const Color(0xFF5182BD);
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const Home());
 }
 
