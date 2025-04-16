@@ -150,7 +150,7 @@ Future<dynamic> getAppointments() async {
     if (token == null) throw Exception('No token found');
 
     final response = await http.get(
-      Uri.parse('http://localhost:3001/appointment'),
+      Uri.parse('http://localhost:3001/appointment/list'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token', // Ajouter le token dans les headers
@@ -170,10 +170,14 @@ Future<dynamic> getAppointments() async {
 
 Future<dynamic> getAppointmentById(String id) async {
   try {
+    final token = await getToken();
+    if (token == null) throw Exception('No token found');
+
     final response = await http.get(
       Uri.parse('http://localhost:3001/appointment/$id'),
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token', // Ajouter le token dans les headers
       },
     );
 
