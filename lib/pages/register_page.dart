@@ -126,7 +126,7 @@ class _RegisterFormState extends State<RegisterForm> {
           const SizedBox(height: 20),
           GestureDetector(
             onTap: () {
-              print("Redirection vers la page de connexion");
+              debugPrint("Redirection vers la page de connexion");
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const Welcome()),

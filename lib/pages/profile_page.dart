@@ -66,7 +66,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
             const SizedBox(height: 20),
 
-            // Nom d'utilisateur
             Text(
               userName ?? 'Chargement...',
               style: const TextStyle(
@@ -77,19 +76,16 @@ class _ProfilePageState extends State<ProfilePage> {
 
             const SizedBox(height: 40),
 
-            // Menu d'options - Navigate to appointments tab
             _buildProfileOption(
               'Mes rendez-vous',
               Icons.calendar_today,
               () {
-                // Navigate to the appointments tab (index 0)
                 if (widget.onNavigationRequest != null) {
                   widget.onNavigationRequest!(0);
                 }
               },
             ),
 
-            // Admin button - only shown for admin users
             if (isAdmin)
               _buildProfileOption(
                 'Administration',
@@ -105,7 +101,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
             const SizedBox(height: 30),
 
-            // Logout button
             ElevatedButton.icon(
               onPressed: () async {
                 await removeToken();

@@ -47,15 +47,15 @@ class _ConsultationPageState extends State<ConsultationPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Confirmation'),
-        content: const Text('Êtes-vous sûr de vouloir annuler ce rendez-vous ?'), // Amélioration du texte
+        content: const Text('Êtes-vous sûr de vouloir annuler ce rendez-vous ?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Non'), // Plus explicite
+            child: const Text('Non'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Oui'), // Plus explicite
+            child: const Text('Oui'),
           ),
         ],
       ),
@@ -70,7 +70,7 @@ class _ConsultationPageState extends State<ConsultationPage> {
             const SnackBar(
               content: Text('Rendez-vous annulé avec succès'),
               backgroundColor: Colors.green,
-              duration: Duration(seconds: 2), // Ajouter cette ligne
+              duration: Duration(seconds: 2),
             ),
           );
         }
@@ -92,7 +92,7 @@ class _ConsultationPageState extends State<ConsultationPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mes Rendez-vous', style: TextStyle(color: Colors.white)),
-        backgroundColor: primaryColor, // Utiliser primaryColor
+        backgroundColor: primaryColor,
       ),
       body: Column(
         children: [

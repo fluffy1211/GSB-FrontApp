@@ -1,24 +1,25 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'session_manager.dart';
 
 // REQUETE DE LOGIN
 Future<dynamic> loginUser(Map<String, dynamic> data) async {
   try {
-    print('Sending login data: ${jsonEncode(data)}'); // Add debug log
+    debugPrint('Sending login data: ${jsonEncode(data)}');
     final response = await http.post(
       Uri.parse('http://localhost:3001/user/login'),
       headers: {
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
-        'email': data['email'], // Changed from 'username' to 'email'
+        'email': data['email'],
         'password': data['password'],
       }),
     );
 
-    print('Response status: ${response.statusCode}'); // Add debug log
-    print('Response body: ${response.body}'); // Add debug log
+    debugPrint('Response status: ${response.statusCode}'); // Add debug log
+    debugPrint('Response body: ${response.body}'); // Add debug log
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final responseData = jsonDecode(response.body);
@@ -37,7 +38,6 @@ Future<dynamic> loginUser(Map<String, dynamic> data) async {
 
       return responseData;
     } else {
-      // Gérer le cas où la réponse est une chaîne simple
       try {
         final errorData = jsonDecode(response.body);
         throw Exception(errorData['message'] ?? 'Erreur de connexion');
@@ -47,8 +47,8 @@ Future<dynamic> loginUser(Map<String, dynamic> data) async {
       }
     }
   } catch (e) {
-    print('API Error: $e');
-    rethrow; // Propager l'erreur pour une meilleure gestion dans l'UI
+    debugPrint('API Error: $e');
+    rethrow;
   }
 }
 
@@ -69,7 +69,7 @@ Future<dynamic> createUser(Map<String, dynamic> data) async {
       throw Exception('Failed to create data: ${response.statusCode}');
     }
   } catch (e) {
-    print('API Error: $e');
+    debugPrint('API Error: $e');
     throw Exception('Failed to create data');
   }
 }
@@ -91,7 +91,7 @@ Future<dynamic> getPraticiens() async {
       throw Exception('Failed to fetch praticiens: ${response.statusCode}');
     }
   } catch (e) {
-    print('API Error: $e');
+    debugPrint('API Error: $e');
     throw Exception('Failed to fetch praticiens');
   }
 }
@@ -113,7 +113,7 @@ Future<dynamic> getPraticienById(String id) async {
       throw Exception('Failed to create data: ${response.statusCode}');
     }
   } catch (e) {
-    print('API Error: $e');
+    debugPrint('API Error: $e');
     throw Exception('Failed to create data');
   }
 }
@@ -139,8 +139,8 @@ Future<dynamic> createAppointment(Map<String, dynamic> appointmentData) async {
       throw Exception(errorData['error'] ?? 'Failed to create appointment');
     }
   } catch (e) {
-    print('API Error: $e');
-    rethrow; // Propager l'erreur pour la gérer dans l'UI
+    debugPrint('API Error: $e');
+    rethrow;
   }
 }
 
@@ -163,7 +163,7 @@ Future<dynamic> getAppointments() async {
       throw Exception('Failed to fetch appointments: ${response.statusCode}');
     }
   } catch (e) {
-    print('API Error: $e');
+    debugPrint('API Error: $e');
     throw Exception('Failed to fetch appointments');
   }
 }
@@ -187,7 +187,7 @@ Future<dynamic> getAppointmentById(String id) async {
       throw Exception('Failed to fetch appointment: ${response.statusCode}');
     }
   } catch (e) {
-    print('API Error: $e');
+    debugPrint('API Error: $e');
     throw Exception('Failed to fetch appointment');
   }
 }
@@ -212,7 +212,7 @@ Future<dynamic> cancelAppointment(int appointmentId) async {
       throw Exception(errorData['message'] ?? 'Failed to cancel appointment');
     }
   } catch (e) {
-    print('API Error: $e');
+    debugPrint('API Error: $e');
     rethrow;
   }
 }
@@ -220,14 +220,14 @@ Future<dynamic> cancelAppointment(int appointmentId) async {
 // REQUETE POUR AJOUTER UN PRATICIEN
 Future<dynamic> addPraticien(Map<String, dynamic> data) async {
   try {
-    print('Starting addPraticien function with data: ${jsonEncode(data)}');
+    debugPrint('Starting addPraticien function with data: ${jsonEncode(data)}');
     final token = await getToken();
-    print('Retrieved token: ${token != null ? 'Token exists' : 'Token is null'}');
+    debugPrint('Retrieved token: ${token != null ? 'Token exists' : 'Token is null'}');
 
     if (token == null) throw Exception('No token found');
 
     final url = 'http://localhost:3001/admin/addPraticien';
-    print('Sending POST request to: $url');
+    debugPrint('Sending POST request to: $url');
 
     final body = jsonEncode({
       'first_name': data['first_name'],
@@ -235,7 +235,7 @@ Future<dynamic> addPraticien(Map<String, dynamic> data) async {
       'specialties': data['specialties'],
       'avatarPath': data['avatarPath'] ?? '',
     });
-    print('Request body: $body');
+    debugPrint('Request body: $body');
 
     final response = await http.post(
       Uri.parse(url),
@@ -246,26 +246,26 @@ Future<dynamic> addPraticien(Map<String, dynamic> data) async {
       body: body,
     );
 
-    print('Response status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    debugPrint('Response status code: ${response.statusCode}');
+    debugPrint('Response body: ${response.body}');
 
     if (response.statusCode == 201) {
       final responseData = jsonDecode(response.body);
-      print('Success: Practitioner added successfully');
+      debugPrint('Success: Practitioner added successfully');
       return responseData;
     } else {
-      print('Error: Non-success status code received: ${response.statusCode}');
+      debugPrint('Error: Non-success status code received: ${response.statusCode}');
       try {
         final errorData = jsonDecode(response.body);
-        print('Error data: $errorData');
+        debugPrint('Error data: $errorData');
         throw Exception(errorData['error'] ?? 'Failed to add praticien');
       } catch (e) {
-        print('Error parsing error response: $e');
+        debugPrint('Error parsing error response: $e');
         throw Exception('Failed to add praticien: ${response.body}');
       }
     }
   } catch (e) {
-    print('API Error in addPraticien: $e');
+    debugPrint('API Error in addPraticien: $e');
     rethrow;
   }
 }
@@ -273,14 +273,14 @@ Future<dynamic> addPraticien(Map<String, dynamic> data) async {
 // REQUETE POUR SUPPRIMER UN PRATICIEN
 Future<dynamic> removePraticien(int praticienId) async {
   try {
-    print('Starting removePraticien function for ID: $praticienId');
+    debugPrint('Starting removePraticien function for ID: $praticienId');
     final token = await getToken();
-    print('Retrieved token: ${token != null ? 'Token exists' : 'Token is null'}');
+    debugPrint('Retrieved token: ${token != null ? 'Token exists' : 'Token is null'}');
 
     if (token == null) throw Exception('No token found');
 
     final url = 'http://localhost:3001/admin/praticien/$praticienId';
-    print('Sending DELETE request to: $url');
+    debugPrint('Sending DELETE request to: $url');
 
     final response = await http.delete(
       Uri.parse(url),
@@ -290,30 +290,30 @@ Future<dynamic> removePraticien(int praticienId) async {
       },
     );
 
-    print('Response status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    debugPrint('Response status code: ${response.statusCode}');
+    debugPrint('Response body: ${response.body}');
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
       final appointmentsRemoved = responseData['appointmentsRemoved'] ?? 0;
-      print('Success: Practitioner removed successfully with $appointmentsRemoved associated appointments');
+      debugPrint('Success: Practitioner removed successfully with $appointmentsRemoved associated appointments');
       return responseData;
     } else if (response.statusCode == 404) {
-      print('Error: Practitioner not found');
+      debugPrint('Error: Practitioner not found');
       throw Exception('Praticien non trouvé');
     } else {
-      print('Error: Non-success status code received: ${response.statusCode}');
+      debugPrint('Error: Non-success status code received: ${response.statusCode}');
       try {
         final errorData = jsonDecode(response.body);
-        print('Error data: $errorData');
+        debugPrint('Error data: $errorData');
         throw Exception(errorData['error'] ?? 'Failed to remove praticien');
       } catch (e) {
-        print('Error parsing error response: $e');
+        debugPrint('Error parsing error response: $e');
         throw Exception('Failed to remove praticien: ${response.body}');
       }
     }
   } catch (e) {
-    print('API Error in removePraticien: $e');
+    debugPrint('API Error in removePraticien: $e');
     rethrow;
   }
 }

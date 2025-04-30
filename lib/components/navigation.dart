@@ -14,14 +14,12 @@ class NavigationPage extends StatefulWidget {
 class _NavigationPageState extends State<NavigationPage> {
   int _selectedIndex = 0;
 
-  // Method to navigate to a specific tab
   void navigateToTab(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
-  // Updated to pass the navigation callback to ProfilePage
   List<Widget> get _pages => <Widget>[
         const ConsultationPage(),
         const PraticiensPage(),

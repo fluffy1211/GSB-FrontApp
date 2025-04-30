@@ -32,7 +32,7 @@ class _ManagePractitionersPageState extends State<ManagePractitionersPage> {
     });
 
     try {
-      print('Loading practitioners list');
+      debugPrint('Loading practitioners list');
       final data = await api.getPraticiens();
 
       setState(() {
@@ -47,9 +47,9 @@ class _ManagePractitionersPageState extends State<ManagePractitionersPage> {
             .toList();
         _isLoadingList = false;
       });
-      print('Loaded ${_praticiens.length} practitioners');
+      debugPrint('Loaded ${_praticiens.length} practitioners');
     } catch (e) {
-      print('Error loading practitioners: $e');
+      debugPrint('Error loading practitioners: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -66,13 +66,13 @@ class _ManagePractitionersPageState extends State<ManagePractitionersPage> {
 
   Future<void> _deletePraticien(int id) async {
     try {
-      print('Attempting to delete practitioner with ID: $id');
+      debugPrint('Attempting to delete practitioner with ID: $id');
       final result = await api.removePraticien(id);
 
       final appointmentsRemoved = result['appointmentsRemoved'] ?? 0;
       String message = 'Praticien supprimé avec succès';
       if (appointmentsRemoved > 0) {
-        message += ' ainsi que ${appointmentsRemoved} rendez-vous associé${appointmentsRemoved > 1 ? 's' : ''}';
+        message += ' ainsi que $appointmentsRemoved rendez-vous associé${appointmentsRemoved > 1 ? 's' : ''}';
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -85,7 +85,7 @@ class _ManagePractitionersPageState extends State<ManagePractitionersPage> {
       // Refresh the list
       _loadPraticiens();
     } catch (error) {
-      print('Error deleting practitioner: $error');
+      debugPrint('Error deleting practitioner: $error');
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -150,30 +150,30 @@ class _ManagePractitionersPageState extends State<ManagePractitionersPage> {
   }
 
   Future<void> _submitForm() async {
-    print('Submit form button pressed');
+    debugPrint('Submit form button pressed');
     if (_formKey.currentState!.validate()) {
-      print('Form validation successful');
+      debugPrint('Form validation successful');
 
       setState(() {
         _isLoading = true;
       });
 
       try {
-        print('Preparing practitioner data for submission');
+        debugPrint('Preparing practitioner data for submission');
         final data = {
           'first_name': _firstNameController.text.trim(),
           'last_name': _lastNameController.text.trim(),
           'specialties': _specialtiesController.text.trim(),
           'avatarPath': _avatarPath ?? "",
         };
-        print('Practitioner data: $data');
+        debugPrint('Practitioner data: $data');
 
-        print('Calling api.addPraticien');
+        debugPrint('Calling api.addPraticien');
         await api.addPraticien(data);
-        print('api.addPraticien call completed successfully');
+        debugPrint('api.addPraticien call completed successfully');
 
         if (mounted) {
-          print('Showing success message');
+          debugPrint('Showing success message');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Praticien ajouté avec succès'),
@@ -182,7 +182,7 @@ class _ManagePractitionersPageState extends State<ManagePractitionersPage> {
           );
 
           // Reset form
-          print('Resetting form');
+          debugPrint('Resetting form');
           _firstNameController.clear();
           _lastNameController.clear();
           _specialtiesController.clear();
@@ -192,9 +192,9 @@ class _ManagePractitionersPageState extends State<ManagePractitionersPage> {
           _loadPraticiens();
         }
       } catch (error) {
-        print('Error submitting form: $error');
+        debugPrint('Error submitting form: $error');
         if (mounted) {
-          print('Showing error message');
+          debugPrint('Showing error message');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Erreur: ${error.toString()}'),
@@ -203,7 +203,7 @@ class _ManagePractitionersPageState extends State<ManagePractitionersPage> {
           );
         }
       } finally {
-        print('Form submission process completed');
+        debugPrint('Form submission process completed');
         if (mounted) {
           setState(() {
             _isLoading = false;
@@ -211,7 +211,7 @@ class _ManagePractitionersPageState extends State<ManagePractitionersPage> {
         }
       }
     } else {
-      print('Form validation failed');
+      debugPrint('Form validation failed');
     }
   }
 
