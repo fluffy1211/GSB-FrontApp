@@ -21,7 +21,7 @@ class _WelcomeState extends State<Welcome> {
     try {
       if (_loginFormKey.currentState!.validate()) {
         final response = await loginUser({
-          'email': _usernameController.text, // Changed from 'username' to 'email'
+          'email': _usernameController.text,
           'password': _passwordController.text,
         });
 
@@ -108,7 +108,7 @@ class _WelcomeState extends State<Welcome> {
             child: TextFormField(
               controller: _usernameController,
               decoration: InputDecoration(
-                hintText: 'Email ou Nom', // Updated hint text
+                hintText: 'Email ou Nom',
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: primaryColor, width: 2),
                 ),

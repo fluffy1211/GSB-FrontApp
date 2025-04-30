@@ -40,7 +40,7 @@ class _PraticiensListState extends State<PraticiensList> {
   Future<void> _loadPraticiens() async {
     try {
       final response = await getPraticiens();
-      print('API Response: $response');
+      debugPrint('API Response: $response');
 
       if (response is List<dynamic>) {
         setState(() {
@@ -59,7 +59,7 @@ class _PraticiensListState extends State<PraticiensList> {
         throw Exception('Unexpected response format: $response');
       }
     } catch (e) {
-      print('Error loading praticiens: $e');
+      debugPrint('Error loading praticiens: $e');
       setState(() {
         error = e.toString();
         isLoading = false;

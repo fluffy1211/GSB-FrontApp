@@ -64,11 +64,11 @@ class _SymptomsDropdownState extends State<SymptomsDropdown> {
                 ),
               ),
               dropdownDecoration: const DropdownDecoration(
-                maxHeight: 325, // Remettre la hauteur d'origine pour permettre le scroll
+                maxHeight: 325,
                 header: Padding(
                   padding: EdgeInsets.all(8),
                   child: Text(
-                    'Sélectionnez vos symptômes', // Correction de l'orthographe
+                    'Sélectionnez vos symptômes',
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       fontSize: 16,
@@ -84,7 +84,7 @@ class _SymptomsDropdownState extends State<SymptomsDropdown> {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Veuillez sélectionner au moins un symptôme'; // Correction du texte anglais
+                  return 'Veuillez sélectionner au moins un symptôme';
                 }
                 return null;
               },

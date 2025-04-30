@@ -62,9 +62,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
     if (picked != null && picked != selectedDate) {
       setState(() {
-        // Remove time component for comparison
         selectedDate = DateTime(picked.year, picked.month, picked.day);
-        selectedTimeSlot = null; // Reset time slot when date changes
+        selectedTimeSlot = null;
       });
     }
   }
@@ -114,7 +113,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Une erreur est survenue. Veuillez réessayer plus tard.'), // Message d'erreur plus clair
+          content: Text('Une erreur est survenue. Veuillez réessayer plus tard.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -137,7 +136,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0), // Réduit padding vertical à 10
+              padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -173,13 +172,13 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 10), // Réduit de 24 à 10
+                      const SizedBox(height: 10),
                     ],
                   ),
-                  const SizedBox(height: 5), // Réduit de 15 à 5
+                  const SizedBox(height: 5),
                   const Text(
                     'Sélectionnez une date :',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // Réduit taille police
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 5),
                   ElevatedButton(
@@ -195,13 +194,13 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     children: [
                       const Text(
                         'Créneaux horaires disponibles :',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // Réduit taille police
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 5),
                       slots.isNotEmpty
                           ? Wrap(
-                              spacing: 8, // Réduit espacement horizontal
-                              runSpacing: 8, // Réduit espacement vertical
+                              spacing: 8,
+                              runSpacing: 8,
                               children: slots.map((time) {
                                 return ChoiceChip(
                                   label: Text(time),
@@ -222,7 +221,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                               'Aucun créneau disponible pour cette date.',
                               style: TextStyle(
                                 color: Colors.grey[600],
-                                fontStyle: FontStyle.italic, // Amélioration du style
+                                fontStyle: FontStyle.italic,
                               ),
                             ),
                     ],
@@ -233,12 +232,12 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     children: [
                       const Text(
                         'Symptômes :',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // Réduit taille police
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       SymptomsDropdown(
                         controller: symptomController,
                         onSelectionChange: (selectedItems) {
-                          setState(() {}); // Simple setState pour mettre à jour le bouton
+                          setState(() {});
                         },
                       ),
                     ],
